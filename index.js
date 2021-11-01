@@ -1,11 +1,12 @@
 const qrcode = require('qrcode-terminal');
-
 const fs = require('fs')
-
 const { Client } = require('whatsapp-web.js');
+
 let client
 
 const SESSION_FILE_PATH = './session.json'
+
+// Known commands completely hardcoded xd
 
 const knownCommands = () => {
   return `Comandos existentes:
@@ -13,6 +14,8 @@ const knownCommands = () => {
   ping,
   chau`
 }
+
+// This function executes if session.json exists in the root directory (aka a whatsapp session was saved previously)
 
 const withSession = () => {
   sessionData = require(SESSION_FILE_PATH)
@@ -28,6 +31,8 @@ const withSession = () => {
 
   client.initialize()
 }
+
+//This one executes if session.json does not exist within the root directory
 
 const noSession = () => {
   client = new Client({
@@ -52,9 +57,9 @@ const noSession = () => {
   client.initialize();
 }
 
-const readMessage = (message) => {
+// Replies a msg if it is an existing command
 
-  console.log((message.body).toLowerCase())
+const readMessage = (message) => {
 
   switch((message.body).toLowerCase()){
     case 'ping':
@@ -72,6 +77,10 @@ const readMessage = (message) => {
   }
 }
 
+// if session.json exists
+
 (fs.existsSync(SESSION_FILE_PATH)) ? withSession() : noSession()
+
+// message listener
 
 client.on('message', readMessage)
